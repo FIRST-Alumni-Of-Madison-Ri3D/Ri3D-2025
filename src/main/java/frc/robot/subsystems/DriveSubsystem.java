@@ -8,9 +8,12 @@ import com.revrobotics.spark.SparkMax;
 
 import java.util.function.DoubleSupplier;
 
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.SPI;
@@ -46,25 +49,30 @@ public class DriveSubsystem extends SubsystemBase {
     frontRightConfig = new SparkMaxConfig();
     backRightConfig = new SparkMaxConfig();
 
-    // Set secondary motors to follow primary motors on each side
-    backLeftConfig.follow(DriveConstants.FRONT_LEFT_DRIVE_CAN_ID, true);
-    backRightConfig.follow(DriveConstants.FRONT_RIGHT_DRIVE_CAN_ID, true);
+    //TODO update ramp rate and current limit after testing
+    frontLeftConfig.closedLoopRampRate(DriveConstants.RAMP_RATE)
+      .smartCurrentLimit(DriveConstants.DRIVE_CURRENT_LIMIT)
+      .idleMode(IdleMode.kBrake);
 
-    // Set ramp rate to limit drive acceleration
-    //TODO update after testing
-    frontLeftConfig.closedLoopRampRate(DriveConstants.RAMP_RATE);
-    backLeftConfig.closedLoopRampRate(DriveConstants.RAMP_RATE);
-    frontRightConfig.closedLoopRampRate(DriveConstants.RAMP_RATE);
-    backRightConfig.closedLoopRampRate(DriveConstants.RAMP_RATE);
+    backLeftConfig.closedLoopRampRate(DriveConstants.RAMP_RATE)
+      .smartCurrentLimit(DriveConstants.DRIVE_CURRENT_LIMIT)
+      .idleMode(IdleMode.kBrake)
+      .follow(DriveConstants.FRONT_LEFT_DRIVE_CAN_ID, false);
 
-    // Set current limit for drive motors
-    //TODO update after testing
-    frontLeftConfig.smartCurrentLimit(DriveConstants.DRIVE_CURRENT_LIMIT);
-    backLeftConfig.smartCurrentLimit(DriveConstants.DRIVE_CURRENT_LIMIT);
-    frontRightConfig.smartCurrentLimit(DriveConstants.DRIVE_CURRENT_LIMIT);
-    backRightConfig.smartCurrentLimit(DriveConstants.DRIVE_CURRENT_LIMIT);
+    frontRightConfig.closedLoopRampRate(DriveConstants.RAMP_RATE)
+      .smartCurrentLimit(DriveConstants.DRIVE_CURRENT_LIMIT)
+      .idleMode(IdleMode.kBrake)
+      .inverted(true);
 
-    frontRightConfig.inverted(true);
+    backRightConfig.closedLoopRampRate(DriveConstants.RAMP_RATE)
+      .smartCurrentLimit(DriveConstants.DRIVE_CURRENT_LIMIT)
+      .idleMode(IdleMode.kBrake)
+      .follow(DriveConstants.FRONT_RIGHT_DRIVE_CAN_ID, false);
+
+    frontLeftMotor.configure(frontLeftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    backLeftMotor.configure(backLeftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    frontRightMotor.configure(frontRightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    backRightMotor.configure(backRightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     differentialDrive = new DifferentialDrive(frontLeftMotor, frontRightMotor);
 
@@ -72,9 +80,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   /** Drive command with input squaring */
   public Command DriveCommand(DoubleSupplier xSpeed, DoubleSupplier zRotation) {
-    
-    System.out.println("Running Drive Command");
-
+  
     return this.run(() -> differentialDrive.arcadeDrive(xSpeed.getAsDouble(), zRotation.getAsDouble(), true));
 
   }

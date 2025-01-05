@@ -73,6 +73,9 @@ public final class Constants {
   }
 
   public static final class IntakeConstants {
+    public static final int ALGAE_INTAKE_CAN_ID = 40;
+    public static final int CORAL_INTAKE_CAN_ID = 41;
+
 
   }
 }

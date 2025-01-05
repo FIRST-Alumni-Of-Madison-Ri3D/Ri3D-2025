@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Inches;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -14,6 +16,30 @@ package frc.robot;
  */
 public final class Constants {
   public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
+    public static final int DRIVER_CONTROLLER_PORT = 0;
+  }
+
+  public static final class DriveConstants {
+    public static final int FRONT_LEFT_DRIVE_CAN_ID = 10;
+    public static final int BACK_LEFT_DRIVE_CAN_ID = 11;
+    public static final int FRONT_RIGHT_DRIVE_CAN_ID = 12;
+    public static final int BACK_RIGHT_DRIVE_CAN_ID = 13;
+
+    public static final double RAMP_RATE = 1;
+    public static final int DRIVE_CURRENT_LIMIT = 40;
+
+    public static final double TRACKWIDTH_METERS = 0.5588; // 22 inches
+  }
+
+  public static final class ArmConstants {
+
+  }
+
+  public static final class WristConstants {
+
+  }
+
+  public static final class IntakeConstants {
+    
   }
 }

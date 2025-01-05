@@ -17,13 +17,14 @@ import static edu.wpi.first.units.Units.Inches;
 public final class Constants {
   public static class OperatorConstants {
     public static final int DRIVER_CONTROLLER_PORT = 0;
+    public static final int TESTING_CONTROLLER_PORT = 1;
   }
 
   public static final class DriveConstants {
-    public static final int FRONT_LEFT_DRIVE_CAN_ID = 10;
-    public static final int BACK_LEFT_DRIVE_CAN_ID = 11;
-    public static final int FRONT_RIGHT_DRIVE_CAN_ID = 12;
-    public static final int BACK_RIGHT_DRIVE_CAN_ID = 13;
+    public static final int FRONT_LEFT_DRIVE_CAN_ID = 13;
+    public static final int BACK_LEFT_DRIVE_CAN_ID = 12;
+    public static final int FRONT_RIGHT_DRIVE_CAN_ID = 11;
+    public static final int BACK_RIGHT_DRIVE_CAN_ID = 10;
 
     public static final double RAMP_RATE = 1;
     public static final int DRIVE_CURRENT_LIMIT = 40;
@@ -32,14 +33,46 @@ public final class Constants {
   }
 
   public static final class ArmConstants {
+    public static final int ARM_CAN_ID = 20;
 
+    public static final int ARM_CURRENT_LIMIT = 40;
+
+    public static final double ARM_POSITION_CONVERSION_FACTOR = 1;
+
+    public static final double ARM_FORWARD_SOFT_LIMIT = 10;
+    public static final double ARM_REVERSE_SOFT_LIMIT = -10;
+
+    public static final double ARM_P = 1;
+
+    public static final double ARM_MIN_PID_OUTPUT = -1;
+    public static final double ARM_MAX_PID_OUTPUT = 1;
+
+    public static final double ARM_MAX_VELOCITY_RPM = 100;
+    public static final double ARM_MAX_ACCEL_RPM_PER_SEC = 100;
+    public static final double ARM_ALLOWABLE_ERROR = 1;
   }
 
   public static final class WristConstants {
+    public static final int WRIST_CAN_ID = 30;
 
+    public static final int WRIST_CURRENT_LIMIT = 40;
+
+    public static final double WRIST_POSITION_CONVERSION_FACTOR = 1;
+
+    public static final double WRIST_FORWARD_SOFT_LIMIT = 10;
+    public static final double WRIST_REVERSE_SOFT_LIMIT = -10;
+
+    public static final double WRIST_P = 1;
+
+    public static final double WRIST_MIN_PID_OUTPUT = -1;
+    public static final double WRIST_MAX_PID_OUTPUT = 1;
+
+    public static final double WRIST_MAX_VELOCITY_RPM = 100;
+    public static final double WRIST_MAX_ACCEL_RPM_PER_SEC = 100;
+    public static final double WRIST_ALLOWABLE_ERROR = 1;
   }
 
   public static final class IntakeConstants {
-    
+
   }
 }

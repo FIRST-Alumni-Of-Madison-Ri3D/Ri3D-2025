@@ -49,10 +49,10 @@ public class DriveSubsystem extends SubsystemBase {
     frontRightConfig = new SparkMaxConfig();
     backRightConfig = new SparkMaxConfig();
 
-    //TODO update ramp rate and current limit after testing
     frontLeftConfig.closedLoopRampRate(DriveConstants.RAMP_RATE)
       .smartCurrentLimit(DriveConstants.DRIVE_CURRENT_LIMIT)
-      .idleMode(IdleMode.kBrake);
+      .idleMode(IdleMode.kBrake)
+      .inverted(true);
 
     backLeftConfig.closedLoopRampRate(DriveConstants.RAMP_RATE)
       .smartCurrentLimit(DriveConstants.DRIVE_CURRENT_LIMIT)
@@ -62,7 +62,7 @@ public class DriveSubsystem extends SubsystemBase {
     frontRightConfig.closedLoopRampRate(DriveConstants.RAMP_RATE)
       .smartCurrentLimit(DriveConstants.DRIVE_CURRENT_LIMIT)
       .idleMode(IdleMode.kBrake)
-      .inverted(true);
+      .inverted(false);
 
     backRightConfig.closedLoopRampRate(DriveConstants.RAMP_RATE)
       .smartCurrentLimit(DriveConstants.DRIVE_CURRENT_LIMIT)

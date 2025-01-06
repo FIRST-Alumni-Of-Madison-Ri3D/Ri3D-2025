@@ -32,6 +32,8 @@ public class ArmSubsystem extends SubsystemBase {
   private SparkBaseConfig armConfig;
 
   private SparkClosedLoopController armController;
+
+  private double armGoal;
   
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
@@ -42,7 +44,6 @@ public class ArmSubsystem extends SubsystemBase {
 
     armConfig = new SparkMaxConfig();
     //TODO update current limit after testing with intake on
-    //TODO update soft limits after testing
     armConfig.smartCurrentLimit(ArmConstants.ARM_CURRENT_LIMIT)
       .idleMode(IdleMode.kBrake)
       .inverted(false)
@@ -75,6 +76,8 @@ public class ArmSubsystem extends SubsystemBase {
 
     armEncoder.setPosition(ArmConstants.ARM_REVERSE_SOFT_LIMIT);
 
+    armGoal = ArmConstants.ARM_DRIVE_POSITION;
+
   }
 
   // Factory commands \\
@@ -90,6 +93,8 @@ public class ArmSubsystem extends SubsystemBase {
    * @param position to set in degrees
    */
   public Command SetArmPosition(double position) {
+
+    armGoal = position;
 
     return this.runOnce(() -> armController.setReference(position, SparkBase.ControlType.kMAXMotionPositionControl));
 
@@ -111,6 +116,17 @@ public class ArmSubsystem extends SubsystemBase {
   public double getArmEncoderPosition() {
 
     return armMotor.getEncoder().getPosition();
+
+  }
+
+  /** Returns true if arm is within allowable error range of setpoint */
+  public boolean isArmAtSetpoint() {
+
+    if(armGoal > 0) {
+      return getArmEncoderPosition() < (armGoal + ArmConstants.ARM_ALLOWABLE_ERROR_DEGREES) && getArmEncoderPosition() > (armGoal - ArmConstants.ARM_ALLOWABLE_ERROR_DEGREES);
+    } else {
+      return false;
+    }
 
   }
 

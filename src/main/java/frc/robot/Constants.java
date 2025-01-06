@@ -13,9 +13,25 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  public static enum RobotStates {
+    DRIVE,
+    FLOOR_INTAKE_CORAL,
+    STATION_INTAKE_CORAL,
+    FLOOR_INTAKE_ALGAE,
+    LOW_INTAKE_ALGAE,
+    HIGH_INTAKE_ALGAE,
+    L1_CORAL,
+    L2_CORAL,
+    L3_CORAL,
+    L4_CORAL,
+    PROCESSOR,
+    BARGE
+  }
+
   public static class OperatorConstants {
     public static final int DRIVER_CONTROLLER_PORT = 0;
-    public static final int TESTING_CONTROLLER_PORT = 1;
+    public static final int OPERATOR_CONTROLLER_PORT = 1;
+    public static final int TESTING_CONTROLLER_PORT = 2;
   }
 
   public static final class DriveConstants {
@@ -37,7 +53,7 @@ public final class Constants {
 
     public static final int ARM_CURRENT_LIMIT = 40;
 
-    // Convert rotations to degrees
+    // Convert rotations to degrees (144.44 is ratio between motor and arm)
     public static final double ARM_POSITION_CONVERSION_FACTOR = 360 / 144.44;
 
     public static final double ARM_FORWARD_SOFT_LIMIT = 95;
@@ -48,17 +64,17 @@ public final class Constants {
     public static final double ARM_MIN_PID_OUTPUT = -0.4;
     public static final double ARM_MAX_PID_OUTPUT = 0.4;
 
-    public static final double ARM_MAX_VELOCITY_DEGREES_PER_MIN = 200;
+    public static final double ARM_MAX_VELOCITY_DEGREES_PER_MIN = 100;
     public static final double ARM_MAX_ACCEL_DEGREES_PER_MIN_PER_SEC = 100;
     public static final double ARM_ALLOWABLE_ERROR_DEGREES = 1;
 
     // Arm position constants
     public static final double ARM_DRIVE_POSITION = -57; // Same as reverse soft limit
-    public static final double ARM_INTAKE_FLOOR_ALGAE_POSITION = 0;
-    public static final double ARM_INTAKE_LOW_ALGAE_POSITION = 0;
-    public static final double ARM_INTAKE_HIGH_ALGAE_POSITION = 0;
-    public static final double ARM_INTAKE_FLOOR_CORAL_POSITION = 0;
-    public static final double ARM_INTAKE_STATION_CORAL_POSITION = 0;
+    public static final double ARM_FLOOR_ALGAE_POSITION = 0;
+    public static final double ARM_LOW_ALGAE_POSITION = 0;
+    public static final double ARM_HIGH_ALGAE_POSITION = 0;
+    public static final double ARM_FLOOR_CORAL_POSITION = 0;
+    public static final double ARM_CORAL_STATION_POSITION = 0;
     public static final double ARM_L1_POSITION = 0;
     public static final double ARM_L2_POSITION = 0;
     public static final double ARM_L3_POSITION = 0;
@@ -71,27 +87,28 @@ public final class Constants {
 
     public static final int WRIST_CURRENT_LIMIT = 40;
 
-    public static final double WRIST_POSITION_CONVERSION_FACTOR = 1;
+    // Convert rotations to degrees (50.14 is ratio between motor and wrist)
+    public static final double WRIST_POSITION_CONVERSION_FACTOR = 360 / 50.14;
 
     public static final double WRIST_FORWARD_SOFT_LIMIT = 10;
     public static final double WRIST_REVERSE_SOFT_LIMIT = -10;
 
     public static final double WRIST_P = 1;
 
-    public static final double WRIST_MIN_PID_OUTPUT = -1;
-    public static final double WRIST_MAX_PID_OUTPUT = 1;
+    public static final double WRIST_MIN_PID_OUTPUT = -0.4;
+    public static final double WRIST_MAX_PID_OUTPUT = 0.4;
 
-    public static final double WRIST_MAX_VELOCITY_RPM = 100;
-    public static final double WRIST_MAX_ACCEL_RPM_PER_SEC = 100;
-    public static final double WRIST_ALLOWABLE_ERROR = 1;
+    public static final double WRIST_MAX_VELOCITY_DEGREES_PER_MIN = 100;
+    public static final double WRIST_MAX_ACCEL_DEGREES_PER_MIN_PER_SEC = 100;
+    public static final double WRIST_ALLOWABLE_ERROR_DEGREES = 1;
 
     // Wrist position constants
     public static final double WRIST_DRIVE_POSITION = 0;
-    public static final double WRIST_INTAKE_FLOOR_ALGAE_POSITION = 0;
-    public static final double WRIST_INTAKE_LOW_ALGAE_POSITION = 0;
-    public static final double WRIST_INTAKE_HIGH_ALGAE_POSITION = 0;
-    public static final double WRIST_INTAKE_FLOOR_CORAL_POSITION = 0;
-    public static final double WRIST_INTAKE_STATION_CORAL_POSITION = 0;
+    public static final double WRIST_FLOOR_ALGAE_POSITION = 0;
+    public static final double WRIST_LOW_ALGAE_POSITION = 0;
+    public static final double WRIST_HIGH_ALGAE_POSITION = 0;
+    public static final double WRIST_FLOOR_CORAL_POSITION = 0;
+    public static final double WRIST_CORAL_STATION_POSITION = 0;
     public static final double WRIST_L1_POSITION = 0;
     public static final double WRIST_L2_POSITION = 0;
     public static final double WRIST_L3_POSITION = 0;
@@ -102,13 +119,13 @@ public final class Constants {
   public static final class IntakeConstants {
     public static final int INTAKE_CAN_ID = 40;
 
-    public static final double INTAKE_STOP_CURRENT = 100;
+    public static final double INTAKE_STOP_CURRENT = 80;
 
     public static final double INTAKE_ALGAE_SPEED = 0;
     public static final double INTAKE_CORAL_SPEED = 0;
-    public static final double SCORE_PROCESSOR_SPEED = 0;
+    public static final double SCORE_PROCESSOR_SPEED = 0.3;
     public static final double SCORE_BARGE_SPEED = 0;
-    public static final double SCORE_CORAL_SPEED = 0;
+    public static final double SCORE_CORAL_SPEED = 0.3;
 
   }
 }

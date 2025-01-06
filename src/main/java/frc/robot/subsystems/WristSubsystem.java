@@ -47,7 +47,9 @@ public class WristSubsystem extends SubsystemBase {
       .idleMode(IdleMode.kBrake)
       .softLimit
         .forwardSoftLimit(WristConstants.WRIST_FORWARD_SOFT_LIMIT)
-        .reverseSoftLimit(WristConstants.WRIST_REVERSE_SOFT_LIMIT);
+        .forwardSoftLimitEnabled(true)
+        .reverseSoftLimit(WristConstants.WRIST_REVERSE_SOFT_LIMIT)
+        .reverseSoftLimitEnabled(true);
 
     //Configure wrist encoder
     //TODO update position conversion factor once chain ratio is determined
@@ -113,5 +115,8 @@ public class WristSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    //TODO same hold position as wrist
+
   }
 }

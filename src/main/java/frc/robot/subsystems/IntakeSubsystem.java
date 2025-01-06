@@ -10,42 +10,48 @@ import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
 
 public class IntakeSubsystem extends SubsystemBase {
 
-  private SparkMax algaeIntakeMotor;
-  private SparkMax coralIntakeMotor;
+  private SparkMax intakeMotor;
 
-  private SparkBaseConfig algaeConfig;
-  private SparkBaseConfig coralConfig;
+  private SparkBaseConfig intakeConfig;
   
   /** Creates a new IntakeSubsystem. */
   public IntakeSubsystem() {
 
-    //TODO confirm motor types before running
-    algaeIntakeMotor = new SparkMax(IntakeConstants.ALGAE_INTAKE_CAN_ID, MotorType.kBrushless);
-    coralIntakeMotor = new SparkMax(IntakeConstants.CORAL_INTAKE_CAN_ID, MotorType.kBrushed);
+    //TODO confirm motor type before running
+    intakeMotor = new SparkMax(IntakeConstants.INTAKE_CAN_ID, MotorType.kBrushless);
 
-    algaeConfig.idleMode(IdleMode.kCoast)
-      .inverted(false);
-
-    coralConfig.idleMode(IdleMode.kCoast)
+    intakeConfig.idleMode(IdleMode.kCoast)
       .inverted(false);
 
   }
 
-  public void setIntakePercentOutput(double percent) {
+  public Command SetIntakePercentOutput(double percent) {
 
-    algaeIntakeMotor.set(percent);
-    coralIntakeMotor.set(percent);
+    return this.runOnce(()-> intakeMotor.set(percent));
     
+  }
+
+  public void stopIntake() {
+
+    intakeMotor.stopMotor();
+
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+    //TODO update stop current based on testing
+    if(intakeMotor.getOutputCurrent() > IntakeConstants.INTAKE_STOP_CURRENT) {
+      
+      stopIntake();
+
+    }
+
   }
 }

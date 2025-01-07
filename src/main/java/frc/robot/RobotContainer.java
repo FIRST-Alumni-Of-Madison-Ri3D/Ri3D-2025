@@ -8,7 +8,6 @@ import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.Constants.RobotStates;
 import frc.robot.Constants.WristConstants;
 import frc.robot.commands.Autos;
 import frc.robot.subsystems.ArmSubsystem;
@@ -19,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -43,24 +43,19 @@ public class RobotContainer {
   private final CommandXboxController operatorController =
       new CommandXboxController(OperatorConstants.OPERATOR_CONTROLLER_PORT);
 
-  private final CommandXboxController testingController = 
-      new CommandXboxController(OperatorConstants.TESTING_CONTROLLER_PORT);
-
-  public static RobotStates robotState;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
 
-    driveSubsystem.setDefaultCommand(driveSubsystem.DriveCommand(() -> -driverController.getLeftY(), () -> (driverController.getRightX() * DriveConstants.DRIVE_TURN_NERF)));
+    driveSubsystem.setDefaultCommand(driveSubsystem.DriveCommand(() -> (-driverController.getLeftY() * DriveConstants.DRIVE_NERF), () -> (-driverController.getRightX() * DriveConstants.DRIVE_TURN_NERF)));
 
-    armSubsystem.setDefaultCommand(armSubsystem.SetArmOutputPercentCommand(() -> (-testingController.getLeftY() * 0.35)));
+    armSubsystem.setDefaultCommand(armSubsystem.SetArmOutputPercentCommand(() -> (-operatorController.getLeftY() * 0.35)));
 
-    wristSubsystem.setDefaultCommand(wristSubsystem.SetWristOutputPercentCommand(() -> (-testingController.getRightY() * 0.5)));
+    wristSubsystem.setDefaultCommand(wristSubsystem.SetWristOutputPercentCommand(() -> (-operatorController.getRightY() * 0.35)));
 
     // Configure the trigger bindings
     configureBindings();
 
-    robotState = RobotStates.DRIVE;
   }
 
   /**
@@ -74,40 +69,23 @@ public class RobotContainer {
    */
   private void configureBindings() {
 
-    testingController.a().whileTrue(intakeSubsystem.SetIntakePercentOutput(0.5));
-    testingController.a().onFalse(new InstantCommand(() -> intakeSubsystem.stopIntake()));
-
-    testingController.b().whileTrue(intakeSubsystem.SetIntakePercentOutput(-0.5));
-    testingController.b().onFalse(new InstantCommand(() -> intakeSubsystem.stopIntake()));
-
     // Don't have coral station pickup set up yet
 
     // 2 controller setup
-    // Driver: L joystick - forward/back, R joystick - spin, LB - floor coral intake, LT - algae intake (map floor, low, high), RB - score/back to drive state (map)
+    // Driver: L joystick - forward/back, R joystick - spin, LB - floor coral intake, LT - floor algae intake, RB - score coral/back to drive, RT - score algae/back to drive
     // Operator: A - L1, B - L2, X - L3, Y - L4, RB - processor, RT - barge, LB - low algae intake, LT - high algae intake
 
 
-    // Driver controller buttons
+    // Driver controller buttons \\
 
-    /*
-    driverController.leftBumper().onTrue(new SequentialCommandGroup(new InstantCommand(() -> robotState = RobotStates.FLOOR_INTAKE_CORAL),
-      new ParallelDeadlineGroup(new WaitUntilCommand(() -> armSubsystem.isArmAtSetpoint()), armSubsystem.SetArmPosition(ArmConstants.ARM_FLOOR_CORAL_POSITION)),
-      new ParallelDeadlineGroup(new WaitUntilCommand(() -> wristSubsystem.isWristAtSetpoint()), wristSubsystem.SetWristPosition(WristConstants.WRIST_FLOOR_CORAL_POSITION)),
-      intakeSubsystem.SetIntakePercentOutput(IntakeConstants.INTAKE_CORAL_SPEED)));
-    */
+    // Score coral/intake algae, then return to drive on release
+    driverController.rightBumper().whileTrue(intakeSubsystem.SetIntakePercentOutput(IntakeConstants.INTAKE_ALGAE_SCORE_CORAL_SPEED));
+    driverController.rightBumper().onFalse(intakeSubsystem.StopIntakeCommand());
 
-
-    // Operator controller buttons
-    operatorController.a().onTrue(new InstantCommand(() -> robotState = RobotStates.L1_CORAL));
-    operatorController.b().onTrue(new InstantCommand(() -> robotState = RobotStates.L2_CORAL));
-    operatorController.x().onTrue(new InstantCommand(() -> robotState = RobotStates.L3_CORAL));
-    operatorController.y().onTrue(new InstantCommand(() -> robotState = RobotStates.L4_CORAL));
-    
-    operatorController.rightBumper().onTrue(new InstantCommand(() -> robotState = RobotStates.PROCESSOR));
-    operatorController.rightTrigger().onTrue(new InstantCommand(() -> robotState = RobotStates.BARGE));
-
-    operatorController.leftBumper().onTrue(new InstantCommand(() -> robotState = RobotStates.LOW_INTAKE_ALGAE));
-    operatorController.leftTrigger().onTrue(new InstantCommand(() -> robotState = RobotStates.HIGH_INTAKE_ALGAE));
+    // Score algae/intake coral, then return to drive on release
+    // Faster to try to shoot into barge
+    driverController.rightTrigger().whileTrue(intakeSubsystem.SetIntakePercentOutput(IntakeConstants.INTAKE_CORAL_SCORE_ALGAE_SPEED));
+    driverController.rightTrigger().onFalse(intakeSubsystem.StopIntakeCommand());
 
   }
 

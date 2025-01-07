@@ -12,7 +12,6 @@ import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
@@ -44,25 +43,15 @@ public class IntakeSubsystem extends SubsystemBase {
     
   }
 
-  public void stopIntake() {
+  public Command StopIntakeCommand() {
 
-    intakeMotor.stopMotor();
+    return this.runOnce(() -> intakeMotor.stopMotor());
 
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Intake Current", intakeMotor.getOutputCurrent());
-
-    /*
-    //TODO update stop current based on testing
-    if(intakeMotor.getOutputCurrent() > IntakeConstants.INTAKE_STOP_CURRENT) {
-      
-      stopIntake();
-
-    }
-    */
 
   }
 }

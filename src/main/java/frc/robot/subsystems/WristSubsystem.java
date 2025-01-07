@@ -18,6 +18,7 @@ import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
@@ -33,7 +34,7 @@ public class WristSubsystem extends SubsystemBase {
 
   private SparkClosedLoopController wristController;
 
-  private double wristGoal;
+  private double position;
 
   /** Creates a new WristSubsystem. */
   public WristSubsystem() {
@@ -43,11 +44,10 @@ public class WristSubsystem extends SubsystemBase {
     wristEncoder = wristMotor.getEncoder();
 
     wristConfig = new SparkMaxConfig();
-    //TODO update current limit after testing
-    //TODO check if needs to be inverted
-    //TODO update soft limits after testing
+
     wristConfig.smartCurrentLimit(WristConstants.WRIST_CURRENT_LIMIT)
       .idleMode(IdleMode.kBrake)
+      .inverted(true)
       .softLimit
         .forwardSoftLimit(WristConstants.WRIST_FORWARD_SOFT_LIMIT)
         .forwardSoftLimitEnabled(true)
@@ -64,7 +64,6 @@ public class WristSubsystem extends SubsystemBase {
       .outputRange(WristConstants.WRIST_MIN_PID_OUTPUT, WristConstants.WRIST_MAX_PID_OUTPUT);
 
     // Set MAXMotion constants
-    //TODO update after testing
     wristConfig.closedLoop.maxMotion
       .maxVelocity(WristConstants.WRIST_MAX_VELOCITY_DEGREES_PER_MIN)
       .maxAcceleration(WristConstants.WRIST_MAX_ACCEL_DEGREES_PER_MIN_PER_SEC)
@@ -74,7 +73,9 @@ public class WristSubsystem extends SubsystemBase {
 
     wristController = wristMotor.getClosedLoopController();
 
-    wristGoal = WristConstants.WRIST_DRIVE_POSITION;
+    wristEncoder.setPosition(WristConstants.WRIST_DRIVE_POSITION);
+
+    position = WristConstants.WRIST_FORWARD_SOFT_LIMIT;
 
   }
 
@@ -87,14 +88,14 @@ public class WristSubsystem extends SubsystemBase {
 
   }
 
-  /** Set wrist motor position
+  /** Set wrist motor position using controller input
    * @param position to set in degrees
    */
-  public Command SetWristPosition(double position) {
+  public Command ManualSetWristPosition(DoubleSupplier controllerInput) {
 
-    wristGoal = position;
+    position += controllerInput.getAsDouble();
 
-    return this.runOnce(() -> wristController.setReference(position, SparkBase.ControlType.kMAXMotionPositionControl));
+    return this.run(() -> wristController.setReference(position, SparkBase.ControlType.kMAXMotionPositionControl));
 
   }
 
@@ -117,22 +118,10 @@ public class WristSubsystem extends SubsystemBase {
 
   }
 
-  /** Returns true if wrist is within allowable error range of setpoint */
-  public boolean isWristAtSetpoint() {
-
-    if(wristGoal > 0) {
-      return getWristEncoderPosition() < (wristGoal + WristConstants.WRIST_ALLOWABLE_ERROR_DEGREES) && getWristEncoderPosition() > (wristGoal - WristConstants.WRIST_ALLOWABLE_ERROR_DEGREES);
-    } else {
-      return false;
-    }
-
-  }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-
-    //TODO same hold position as wrist
 
   }
 }
